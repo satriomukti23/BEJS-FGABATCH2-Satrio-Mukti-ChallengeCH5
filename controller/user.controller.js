@@ -1,4 +1,4 @@
-const { profiles } = require('../config/prisma')
+
 const {createUser,getAllUsers,getUserById} = require('../model/user.model')
 
 const create = async (req,res) =>{

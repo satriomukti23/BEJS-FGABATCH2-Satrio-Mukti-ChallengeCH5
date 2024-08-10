@@ -1,0 +1,336 @@
+openapi: 3.0.3
+info:
+  title: Bank-System API
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: https://petstore3.swagger.io/api/v3
+tags:
+  - name: user
+    description: Everythings about user
+  - name: account
+    description: Access to Petstore orders
+  - name: transaction
+    description: Operations about transaction
+paths:
+  /user:
+    post:
+      summary: Membuat pengguna baru
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - email
+                - password
+              properties:
+                username:
+                  type: string 
+                  description: Nama pengguna
+                email:
+                  type: string
+                  description: Alamat email
+                password:
+                  type: string
+                  description: Kata sandi
+      responses:
+        '201':
+          description: Pengguna berhasil dibuat
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: ID pengguna
+                  username:
+                    type: string
+                    description: Nama pengguna
+                  email:
+                    type: string
+                    description: Alamat email
+        '400':
+          description: Permintaan tidak valid
+        '500':
+          description: Terjadi kesalahan server
+    get:
+      summary: Mendapatkan semua pengguna
+      responses:
+        '200':
+          description: Daftar pengguna berhasil diambil
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: ID pengguna
+                    username:
+                      type: string
+                      description: Nama pengguna
+                    email:
+                      type: string
+                      description: Alamat email
+        '404':
+          description: Tidak ada pengguna ditemukan
+        '500':
+          description: Terjadi kesalahan server
+  /user/{userId}:
+    get:
+      summary: Mendapatkan pengguna berdasarkan ID
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID pengguna
+      responses:
+        '200':
+          description: Pengguna berhasil ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: ID pengguna
+                  username:
+                    type: string
+                    description: Nama pengguna
+                  email:
+                    type: string
+                    description: Alamat email
+        '404':
+          description: Pengguna tidak ditemukan
+        '500':
+          description: Terjadi kesalahan server
+  /account:
+    post:
+      summary: Create a new account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name  
+              properties:
+                name:
+                  type: string
+                  description: The name of the account
+      responses:
+        '201':
+          description: Account created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:  
+                    type: string
+                    description: The ID of the newly created account
+                  name:
+                    type: string
+                    description: The name of the created account
+        '400':
+          description: Bad request (e.g., invalid data)
+        '500':
+          description: Internal server error
+    get:
+      summary: Get all accounts
+      responses:
+        '200':
+          description: List of accounts retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:  
+                      type: string
+                      description: The ID of the account
+                    name:
+                      type: string
+                      description: The name of the account
+        '404':
+          description: No accounts found
+        '500':
+          description: Internal server error
+  /account/{accountId}:
+    get:
+      summary: Get an account by ID
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the account to retrieve
+      responses:
+        '200':
+          description: Account retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:  
+                    type: string
+                    description: The ID of the account
+                  name:
+                    type: string
+                    description: The name of the account
+        '404':
+          description: Account not found
+        '500':
+          description: Internal server error
+  /account/user/{userId}:
+    get:
+      summary: Get accounts associated with a user ID
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the account to retrieve
+      responses:
+        '200':
+          description: List of accounts associated with the user ID retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:  
+                      type: string
+                      description: The ID of the account
+                    name:
+                      type: string
+                      description: The name of the account
+        '404':
+          description: No accounts found for the user ID
+        '500':
+          description: Internal server error
+  /transaction:
+    post:
+      summary: Create a new transaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - amount
+                - type  
+              properties:
+                amount:
+                  type: number
+                  description: The amount of the transaction (positive for deposits, negative for withdrawals)
+                type:
+                  type: string
+                  description: The type of transaction (e.g., "deposit", "withdrawal")
+      responses:
+        '201':
+          description: Transaction created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:  
+                    type: string
+                    description: The ID of the newly created transaction
+                  amount:
+                    type: number
+                    description: The amount of the transaction
+                  type:
+                    type: string
+                    description: The type of transaction
+        '400':
+          description: Bad request (e.g., invalid data)
+        '409':  
+          description: Conflict (e.g., insufficient funds)
+        '500':
+          description: Internal server error
+    get:
+      summary: Get all transactions
+      responses:
+        '200':
+          description: List of transactions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:  
+                      type: string
+                      description: The ID of the transaction
+                    amount:
+                      type: number
+                      description: The amount of the transaction
+                    type:
+                      type: string
+                      description: The type of transaction
+                    
+        '404':
+          description: No transactions found
+        '500':
+          description: Internal server error
+  /transaction/{transactionId}:
+    get:
+      summary: Get a transaction by ID
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the transaction to retrieve
+      responses:
+        '200':
+          description: Transaction retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:  
+                    type: string
+                    description: The ID of the transaction
+                  amount:
+                    type: number
+                    description: The amount of the transaction
+                  type:
+                    type: string
+                    description: The type of transaction
+                    
+        '404':
+          description: Transaction not found
+        '500':
+          description: Internal server error
